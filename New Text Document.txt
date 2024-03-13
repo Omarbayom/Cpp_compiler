@@ -1,0 +1,5 @@
+ xyz =5;
+for (int i =0;i<x;5++){
+cout "yasser"; 
+
+}
