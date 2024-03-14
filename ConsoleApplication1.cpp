@@ -227,7 +227,7 @@ bool isOperator(const std::string &str) // woh it works just need to incress the
 
 bool isSeparator(const std::string &str) // maybe yes
 {
-    const vector<std::string> Separators{ "{", "}", ",", "(", ")", ";" };
+    const vector<std::string> Separators{ "{", "}", ",", "(", ")", ";" }; //related to the special chars it is missing the following(".","?",":")  Note: they are not considered as separators 
     for (const auto& separate : Separators)
         if (separate == str)
             return true;
