@@ -3,11 +3,21 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <regex>
 using namespace std;
 // make a differance for * and & in the way that if the buffer holds int then the character is * or & it's a member access
 
 // fix the space string issue
 // add the logical statements
+
+bool detectMemberAccess(const string& input) {
+    // Define the regex pattern to detect member access
+    regex pattern(R"(\[|\]|\*|&|\.|->)");
+
+    // Use std::regex_search to check if the pattern is found in the input
+    return regex_search(input, pattern);
+}
+
 bool KeywordRegex(string pattern)
 {
     if (pattern == "\\bauto\\b")
