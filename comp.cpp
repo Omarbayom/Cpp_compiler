@@ -177,7 +177,7 @@ bool isID(const string& str) {
 
 bool isComment(const string& str) 
 {
-    return str == "/*" || str == "//";
+    return str == "/* ... */" || str == "//";
 }
 
 bool isDigit(const string& str) {
@@ -266,51 +266,62 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
         cout << "error while opening the file\n";
         exit(0);
     }
-    bool miltiCm = false, singleCm = false;
+    bool multiCm = false, singleCm = false;
+    string com;
     while (file >> noskipws >> ch)
     {
-        if (singleCm || miltiCm)
-        {
-            if (singleCm && ch == '\n')
+        if (multiCm) {
+            com +=ch;
+            if (ch == '*') {
+                char next_ch;
+                file >> next_ch;
+                if (file.eof()) {
+                    printRoleOfToken(com);
+                    com = "";
+                }
+                else if (next_ch == '/') {
+                    multiCm = false;
+                    com += next_ch;
+                    printRoleOfToken("/* ... */");
+                    com = "";
+                    file >> next_ch;
+                    com += next_ch;
+                }
+                else {
+                    file.unget();
+                }
+            }
+            
+            continue;
+        }
+        if (singleCm) {
+            com += ch;
+            if (ch == '\n') {
                 singleCm = false;
-
-            if (miltiCm && ch == '*')
-            {
-                file >> ch;
-                if (ch == EOF)
-                    break;
-
-                if (ch == '/')
-                    miltiCm = false;
+                printRoleOfToken("//");
+                com = "";
             }
             continue;
         }
 
-        if (ch == '/')
-        {
-            string comm(1, ch);
-            file >> ch;
-            if (ch == EOF)
-            {
-                printRoleOfToken(comm);
-                break;
-            }
-
-            if (ch == '*')
-            {
-                miltiCm = true;
-                comm += ch;
-            }
-            else if (ch == '/')
-            {
-                singleCm = true;
-                comm += ch;
-            }
-            if (miltiCm || singleCm)
-            {
-                printRoleOfToken(comm);
+        if (ch == '/') {
+            char next_ch;
+            com += ch;
+            file >> next_ch;
+            if (next_ch == '*') {
+                com += next_ch;
+                multiCm = true;
                 continue;
             }
+            else if (next_ch == '/') {
+                singleCm = true;
+                com += next_ch;
+                continue;
+            }
+            else {
+                file.unget(); 
+            }
+            
         }
 
         if (isNotLegal(string(1, ch))&&buffer[0]!='"')
@@ -352,6 +363,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
         }
         buffer += ch;
     }
+
     file.close();
 }
 

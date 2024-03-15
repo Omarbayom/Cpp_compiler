@@ -4,7 +4,10 @@ cout<< "yasser 3sl";
 ===
 
 }
-//ngjkdjggg
+//ngjkdjggg int
 /*gfnsgfnjgfs;ff*/
 /*fgjnfgnfkjlgfgfg
 gfnnshlfdnhdfh*/
+int x =0;
+/*fgjnfgnfkjlgfgfg
+gfnnshlfdnhdfh*
