@@ -10,6 +10,40 @@ using namespace std;
 // fix the space string issue
 // add the logical statements
 
+//*****************************************************************************************
+//bool containsOperators(const string& code) { 
+//    regex opRegex("\\b(=|\\+=|-=|\\*=|/=|%=|\\^=|&=|\\|=|<<=|>>=|==|!=|>|<|>=|<=|&&|\\|\\||!| = | \\+= | -= | \\*= | /= | %= | \\^= | &= | \\|= | <<= | >>= | == | != | > | < | >= | <= | && | \\|\\| | ! )\\b");
+//   sregex_iterator opIter(code.begin(), code.end(), opRegex);
+//    sregex_iterator opEnd;
+//    bool found = false;
+//    int counter = 0;
+//   while (opIter != opEnd) {
+//       cout << "Operators in the entered code:" << endl;
+//       string operatorSymbol = opIter->str();
+//       cout << operatorSymbol  << endl;
+//           counter++;
+//           found = true;
+//           ++opIter;
+//    }
+//   cout << "number of operators: " << counter << endl;
+//   return found;
+//}
+//int main() {
+//    while (true)
+//    {
+//        cout << "Enter a C code: ";
+//        string userCode;
+//        getline(cin, userCode);
+//        if (containsOperators(userCode)) {
+//            cout << "** exists in the operators **" << endl;
+//        }
+//        else {
+//            cout << "** doesn't exist in the operators **" << endl;
+//        }
+//        cout << "**************************************************" << endl;
+//    }
+//    return 0;
+//}
 bool detectMemberAccess(const string& input) {
     // Define the regex pattern to detect member access
     regex pattern(R"(\[|\]|\*|&|\.|->)");
