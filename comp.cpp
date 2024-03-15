@@ -251,8 +251,12 @@ void printRoleOfToken(const string& token) // good el good ma3ada el else
         cout << "(identifier, " << token << ")" << endl;
     else if (isComment(token))
         cout << "(comment, " << token << ")" << endl;
-    else
-        cout<<"Invalid token: " << token<<endl;
+    else {
+        if (token[0]=='"')
+        cout << "Invalid token: " << token+'"' << endl;
+        else
+            cout << "Invalid token: " << token << endl;
+    }
 }
 
 void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
@@ -260,6 +264,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
     char ch;
     string buffer;
     fstream file(nameOfFile, fstream::in);
+
 
     if (!file.is_open())
     {
@@ -304,7 +309,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             continue;
         }
 
-        if (ch == '/') {
+        if (ch == '/' && buffer[0] != '"') {
             char next_ch;
             com += ch;
             file >> next_ch;
@@ -333,7 +338,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             }
             continue;
         }
-        if (isOperator(string(1, ch)) && !isOperator(buffer)) // try to merge
+        if (isOperator(string(1, ch)) && !isOperator(buffer) && buffer[0] != '"') // try to merge
         {
             if (!buffer.empty())
             {
@@ -348,7 +353,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             buffer = "";
         }
 
-        if (isSeparator(string(1, ch)))
+        if (isSeparator(string(1, ch)) && buffer[0] != '"')
         {
             if (!buffer.empty())
             {
@@ -362,6 +367,22 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             }
         }
         buffer += ch;
+        if (buffer[0] == '"' && ch =='\n') {
+
+            while (file >> noskipws >> ch){  
+                if (ch == '"')
+                    break;
+                buffer += ch;
+            
+            }
+            printRoleOfToken(buffer);
+                buffer = "";
+        }
+        if (ch == '"' && buffer[0] == '"' && buffer.size() != 1 && buffer[buffer.size() - 2] != '\\' ) {
+            printRoleOfToken(buffer);
+            buffer = "";
+        }  
+        
     }
 
     file.close();

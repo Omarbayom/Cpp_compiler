@@ -1,6 +1,6 @@
 xyz =5;
 for (int i =0;i<x;5++){
-cout<< "yasser 3sl"; 
+cout<< "yasser 3sl/**/ \" x+5=12"; 
 ===
 
 }
