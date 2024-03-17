@@ -3,15 +3,21 @@
 #include <string>
 #include <vector>
 #include <regex>
+
 using namespace std;
 
-// make a differance for * and & in the way that if the buffer holds int then the character is * or & it's a member access
-
-// add the logical statements                  don't know what does it means no more
+//adham and yasser tasks
 
 //*****************************************************************************************
+struct T {
+    string id;
+    string type;
+};
+
+vector<T> Tokens;
+
 bool isOperator(const string& code) {
-    regex opRegex("(=|\\+=|-=|\\*=|/=|%=|\\^=|&=|\\|=|<<=|>>=|==|!=|>|<|>=|<=|&&|\\|\\||! )");
+    regex opRegex("(=|\\+=|-=|\\*=|/=|%=|\\^=|&=|\\|=|<<=|>>=|==|!=|>|<|>=|<=|&&|\\|\\||!|\\++|--)");
     return regex_match(code, opRegex);
 
 }
@@ -24,31 +30,31 @@ bool detectMemberAccess(const string& input) {
 
 bool KeywordRegex(string pattern)
 {
-    if (pattern == "\\bauto \\b")
+    if (pattern == "\\bauto\\b")
     {
         return true;
     }
-    else if (pattern == "\\bbreak \\b")
+    else if (pattern == "\\bbreak\\b")
     {
         return true;
     }
-    else if (pattern == "\\bcase \\b")
+    else if (pattern == "\\bcase\\b")
     {
         return true;
     }
-    else if (pattern == "\\bchar \\b")
+    else if (pattern == "\\bchar\\b")
     {
         return true;
     }
-    else if (pattern == "\\bconst \\b")
+    else if (pattern == "\\bconst\\b")
     {
         return true;
     }
-    else if (pattern == "\\bcontinue \\b")
+    else if (pattern == "\\bcontinue\\b")
     {
         return true;
     }
-    else if (pattern == "\\bdefault \\b")
+    else if (pattern == "\\bdefault\\b")
     {
         return true;
     }
@@ -187,7 +193,8 @@ bool isDigit(const string& str) {
 
 bool isString(const string& str) 
 {
-    return str[0] == '"' && str[str.size() - 1] == '"';
+    regex pattern("'\\s*(.?)\\s*'");
+    return (str[0] == '"' && str[str.size() - 1] == '"') || (regex_match(str,pattern));
 }
 
 bool isLiteral(const string& str)
@@ -206,23 +213,9 @@ bool isStatement(const string& str) // we need more
     return false;
 }
 
-//bool isOperator(const std::string& str) // woh it works just need to incress the number of operators
-//{
-//    const vector<std::string> operators{ "<", ">", "<=", ">=", "*", "+", "-", "/", "=", "-=", "*=", "+=", "/=", "++", "--", "==" };
-//    for (const auto& op : operators)
-//    {
-//        if (op == str)
-//        {
-//            return true;
-//        }
-//    }
-//
-//    return false;
-//}
-
 bool isSeparator(const string& str) // maybe yes
 {
-    const vector<string> Separators{ "{", "}", ",", "(", ")", ";" }; //related to the special chars it is missing the following(".","?",":")  Note: they are not considered as separators 
+    const vector<string> Separators{ "{", "}", ",", "(", ")", ";",".","?",":" }; //related to the special chars it is missing the following(".","?",":")  Note: they are not considered as separators 
     for (const auto& separate : Separators)
         if (separate == str)
             return true;
@@ -237,26 +230,39 @@ bool isNotLegal(const string& str)
 
 void printRoleOfToken(const string& token) // good el good ma3ada el else
 {
-    if (isOperator(token))
-        cout << "(operator, " << token << ")" << endl;
-    else if (isSeparator(token))
-        cout << "(separator, " << token << ")" << endl;
-    else if (KeywordPattern(token))
-        cout << "(keyword, " << token << ")" << endl;
-    else if (isStatement(token))
-        cout << "(statement, " << token << ")" << endl;
-    else if (isLiteral(token))
-        cout << "(literal, " << token << ")" << endl;
-    else if (isID(token))
-        cout << "(identifier, " << token << ")" << endl;
-    else if (isComment(token))
+    bool valid=true;
+    T woh;
+    if (isComment(token)) {
         cout << "(comment, " << token << ")" << endl;
+        valid = false;
+    }
+    else if (isOperator(token)) {
+        woh = { token,"op" };
+    }
+    else if (isSeparator(token)) {
+        woh = { token,"sp" };
+    }
+    else if (KeywordPattern(token)) {
+        woh = { token,"kw" };
+    }
+    else if (isLiteral(token)) {
+        woh = { token,"li" };
+    }
+    else if (isID(token)) {
+        woh = { token,"id" };
+    }else if (detectMemberAccess(token)) {
+        woh = { token,"ma" };
+    }
+    
     else {
         if (token[0]=='"')
         cout << "Invalid token: " << token+'"' << endl;
         else
             cout << "Invalid token: " << token << endl;
+        valid = false;
     }
+    if (valid)
+        Tokens.push_back(woh);
 }
 
 void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
@@ -280,17 +286,18 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             if (ch == '*') {
                 char next_ch;
                 file >> next_ch;
-                if (file.eof()) {
-                    printRoleOfToken(com);
-                    com = "";
-                }
-                else if (next_ch == '/') {
+                if (next_ch == '/') {
                     multiCm = false;
                     com += next_ch;
                     printRoleOfToken("/* ... */");
                     com = "";
                     file >> next_ch;
                     com += next_ch;
+                }
+                else if (file.eof()) {
+                    cout << "Invalid token: " << com << endl;
+                    com = "";
+                    break;
                 }
                 else {
                     file.unget();
@@ -329,7 +336,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             
         }
 
-        if (isNotLegal(string(1, ch))&&buffer[0]!='"')
+        if (isNotLegal(string(1, ch))&&buffer[0]!='"' && buffer[0] != '\'')
         {
             if (!buffer.empty())
             {
@@ -338,7 +345,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             }
             continue;
         }
-        if (isOperator(string(1, ch)) && !isOperator(buffer) && buffer[0] != '"') // try to merge
+        if (isOperator(string(1, ch)) && !isOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
         {
             if (!buffer.empty())
             {
@@ -353,7 +360,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             buffer = "";
         }
 
-        if (isSeparator(string(1, ch)) && buffer[0] != '"')
+        if (isSeparator(string(1, ch)) && buffer[0] != '"' && buffer[0] != '\'')
         {
             if (!buffer.empty())
             {
@@ -366,7 +373,13 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
                 continue;
             }
         }
+        
         buffer += ch;
+        if (buffer[0] == '\'' && buffer.size() != 1&&ch=='\'') {
+            buffer.erase(remove(buffer.begin(), buffer.end(), ' '), buffer.end());
+            printRoleOfToken(buffer);
+            buffer = "";
+        }
         if (buffer[0] == '"' && ch =='\n') {
 
             while (file >> noskipws >> ch){  
@@ -382,6 +395,8 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             printRoleOfToken(buffer);
             buffer = "";
         }  
+       
+        
         
     }
 
@@ -392,5 +407,8 @@ int main()
 {
 
     lexicalAnalyze("C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt");
+    for (const auto& token : Tokens)
+        cout << "(" << token.id << "," << token.type << ")"<<endl;
+    char x = '   g';
     return 0;
 }

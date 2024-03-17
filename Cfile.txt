@@ -2,10 +2,15 @@ xyz =5;
 for (int i =0;i<x;5++){
 cout<< "yasser 3sl/**/ \" x+5=12"; 
 ===
-
+int fgfsdh*\;
+char x ='d';
+x='fdfdgdg';
+x='         t';
 }
 //ngjkdjggg int
-/*gfnsgfnjgfs;ff*/
+/*gfnsgfnjgfs;ff
+//kmuibib
+*/
 /*fgjnfgnfkjlgfgfg
 gfnnshlfdnhdfh*/
 int x =0;
