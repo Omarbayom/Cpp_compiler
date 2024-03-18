@@ -6,7 +6,9 @@
 
 using namespace std;
 
-//adham and yasser tasks
+//\letters task(\n)
+//have a problem with *
+
 
 //*****************************************************************************************
 struct T {
@@ -17,7 +19,13 @@ struct T {
 vector<T> Tokens;
 
 bool isOperator(const string& code) {
-    regex opRegex("(=|\\+=|-=|\\*=|/=|%=|\\^=|&=|\\|=|<<=|>>=|==|!=|>|<|>=|<=|&&|\\|\\||!|\\++|--)");
+    
+    regex opRegex("(=|\\+=|-=|\\*=|/=|%=|\\^=|&=|\\|=|<<=|>>=|==|!=|>|<|>=|<=|&&|\\|\\||!|\\+\\+|--|~)");
+    return regex_match(code, opRegex);
+
+}
+bool aOperator(const string& code) {
+    regex opRegex("(\\+|-|\\*|/|%|\\^|&|\\||<<|>>|(\\+-)+\\+?|(-\\+)+-?)");
     return regex_match(code, opRegex);
 
 }
@@ -187,7 +195,7 @@ bool isComment(const string& str)
 }
 
 bool isDigit(const string& str) {
-    regex digitRegex("^\\d+$");
+    regex digitRegex("(\\+|-)?^\\d+$");
     return regex_match(str, digitRegex);
 }
 
@@ -202,16 +210,6 @@ bool isLiteral(const string& str)
     return isDigit(str) || isString(str);
 }
 
-
-bool isStatement(const string& str) // we need more
-{
-    const vector<string> statements{ "for", "while" };
-    for (const auto& statement : statements)
-        if (statement == str)
-            return true;
-
-    return false;
-}
 
 bool isSeparator(const string& str) // maybe yes
 {
@@ -239,6 +237,10 @@ void printRoleOfToken(const string& token) // good el good ma3ada el else
     else if (isOperator(token)) {
         woh = { token,"op" };
     }
+    else if (aOperator(token)) {
+        woh = { token,"aop" };
+        
+    }
     else if (isSeparator(token)) {
         woh = { token,"sp" };
     }
@@ -250,7 +252,7 @@ void printRoleOfToken(const string& token) // good el good ma3ada el else
     }
     else if (isID(token)) {
         woh = { token,"id" };
-    }else if (detectMemberAccess(token)) {
+    }else if (detectMemberAccess(string(1,token[0]))) {
         woh = { token,"ma" };
     }
     
@@ -335,6 +337,48 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             }
             
         }
+        if ((ch == '*' || ch == '&') && (Tokens[Tokens.size() - 1].type != "id"|| Tokens[Tokens.size() - 1].type != "li") && Tokens[Tokens.size() - 1].id != "&" && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') {
+            string buf;
+            char next_ch;
+            buf += ch;
+            file >> next_ch;
+            if (isOperator(buf+next_ch)) {
+                buf += next_ch;
+                T woh = { buf,"op" };
+                printRoleOfToken(buffer);
+                buffer="";
+                Tokens.push_back(woh);
+                continue;
+            }
+            else {
+                file.unget();
+                if (buffer.empty()) { 
+                    T woh = { string(1,ch),"ma"};
+                    Tokens.push_back(woh);
+                    continue;
+
+                }
+
+            }
+            
+        }
+        if (aOperator(string(1, ch)) && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        {
+          
+            
+            if (!buffer.empty())
+            {
+                
+                printRoleOfToken(buffer);
+                buffer = "";
+            }
+        }
+
+        if (!aOperator(string(1, ch)) && aOperator(buffer))
+        {
+            printRoleOfToken(buffer);
+            buffer = "";
+        }
 
         if (isNotLegal(string(1, ch))&&buffer[0]!='"' && buffer[0] != '\'')
         {
@@ -409,6 +453,6 @@ int main()
     lexicalAnalyze("C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt");
     for (const auto& token : Tokens)
         cout << "(" << token.id << "," << token.type << ")"<<endl;
-    char x = '   g';
+
     return 0;
 }
