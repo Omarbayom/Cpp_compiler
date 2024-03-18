@@ -1,4 +1,5 @@
 xyz =5;
+double ;
 for (int i =0;i<x;5++){
 cout<< "yasser 3sl/**/ \" x+5=12"; 
 ===
@@ -6,6 +7,8 @@ int fgfsdh\*;
 char x ='d';
 x='fdfdgdg';
 x='         t';
+x='\n'
+x="\tamer"
 int* woh;
 +-+-+-+-+-i;
 }
@@ -16,5 +19,7 @@ int* woh;
 /*fgjnfgnfkjlgfgfg
 gfnnshlfdnhdfh*/
 int x =0;
+int **x;
+x->data;
 /*fgjnfgnfkjlgfgfg
 gfnnshlfdnhdfh*
