@@ -193,6 +193,11 @@ bool isComment(const string& str)
 {
     return str == "/* ... */" || str == "//";
 }
+bool special(const string& str)
+{
+    regex pattern("\\\\[nrtbvaf]");
+    return regex_match(str, pattern);
+}
 
 bool isDigit(const string& str) {
     regex digitRegex("(\\+|-)?^\\d+$");
@@ -201,7 +206,7 @@ bool isDigit(const string& str) {
 
 bool isString(const string& str) 
 {
-    regex pattern("'\\s*(.?)\\s*'");
+    regex pattern("'\\s*((.?)|\\\\[nrtbvaf])\\s*'");
     return (str[0] == '"' && str[str.size() - 1] == '"') || (regex_match(str,pattern));
 }
 
@@ -210,10 +215,9 @@ bool isLiteral(const string& str)
     return isDigit(str) || isString(str);
 }
 
-
 bool isSeparator(const string& str) // maybe yes
 {
-    const vector<string> Separators{ "{", "}", ",", "(", ")", ";",".","?",":" }; //related to the special chars it is missing the following(".","?",":")  Note: they are not considered as separators 
+    const vector<string> Separators{ "{", "}", ",", "(", ")", ";",".","?",":" }; 
     for (const auto& separate : Separators)
         if (separate == str)
             return true;
@@ -336,6 +340,58 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
                 file.unget(); 
             }
             
+        }
+        if (ch == '\\' && (buffer[0] == '"' || buffer[0] == '\'')) {
+            bool woh = true;
+            string buf;
+            char next_ch;
+            buf += ch;
+            file >> next_ch;
+            if (special(buf + next_ch)) {
+                if (buffer[0] == '"') {
+                    char next;
+                    buf += next_ch;
+                    file >> next;
+                    if (next!=' ') {
+                        woh = false;
+                        file.unget();
+                        buffer += buf;
+                        continue;
+                        
+                    }
+                }
+                if (woh) {
+                    buf += next_ch;
+                    T woh = { buf,"sc" };
+                    Tokens.push_back(woh);
+                    buffer += buf;
+                    continue;
+                }
+                
+            }
+            else {
+                file.unget();
+                // woh Depresso was here & broccoli
+            }
+        }
+        if ((ch == '-') && buffer[0] != '"' && buffer[0] != '\'') {
+            string buf;
+            char next_ch;
+            buf += ch;
+            file >> next_ch;
+            if (detectMemberAccess(buf + next_ch)) {
+                buf += next_ch;
+                T woh = { buf,"ma" };
+                printRoleOfToken(buffer);
+                buffer = "";
+                Tokens.push_back(woh);
+                continue;
+            }
+            else {
+                file.unget();
+                // woh Depresso was here & broccoli
+                }
+
         }
         if ((ch == '*' || ch == '&') && (Tokens[Tokens.size() - 1].type != "id"|| Tokens[Tokens.size() - 1].type != "li") && Tokens[Tokens.size() - 1].id != "&" && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') {
             string buf;
