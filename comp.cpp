@@ -6,10 +6,7 @@
 
 using namespace std;
 
-// \nniudgfdj  member access
 // vector -> vlaue
-// 0x for b,h,d,O
-// signed digits
 // e^ay 7aga
 
 struct T {
@@ -207,7 +204,7 @@ bool isDigit(const string& str) {
     regex binaryRegex("(\\+|-)?0[bB][01]+");
 
     return regex_match(str, decimalRegex) || regex_match(str, octalRegex) ||
-           regex_match(str, hexadecimalRegex) || regex_match(str, binaryRegex);
+        regex_match(str, hexadecimalRegex) || regex_match(str, binaryRegex);
 }
 
 bool isString(const string& str) 
@@ -221,7 +218,7 @@ bool isLiteral(const string& str)
     return isDigit(str) || isString(str);
 }
 
-bool isSeparator(const string& str) // maybe yes
+bool isSeparator(const string& str) 
 {
     const vector<string> Separators{ "{", "}", ",", "(", ")", ";",".","?",":" }; 
     for (const auto& separate : Separators)
@@ -235,14 +232,16 @@ bool isNotLegal(const string& str)
 {
     return str == " " || str == "\n";
 }
-
+string com="";
 void printRoleOfToken(const string& token) 
 {
-    bool valid=true;
+
     T woh;
     if (isComment(token)) {
-        cout << "(comment, " << token << ")" << endl;
-        valid = false;
+        if (com[com.size() - 1] == '\n')
+            com.erase(com.size() - 1);
+        woh = { com,"com" };
+
     }
     else if (isOperator(token)) {
         woh = { token,"op" };
@@ -268,12 +267,12 @@ void printRoleOfToken(const string& token)
     
     else {
         if (token[0]=='"')
-        cout << "Invalid token: " << token+'"' << endl;
+            woh = { token + '"',"inv"};
         else
-            cout << "Invalid token: " << token << endl;
-        valid = false;
+            woh = { token ,"inv" };
+
     }
-    if (valid)
+
         Tokens.push_back(woh);
 }
 
@@ -290,7 +289,7 @@ void lexicalAnalyze(const string& nameOfFile)
         exit(0);
     }
     bool multiCm = false, singleCm = false;
-    string com;
+    
     while (file >> noskipws >> ch)
     {
         if (multiCm) {
@@ -304,10 +303,10 @@ void lexicalAnalyze(const string& nameOfFile)
                     printRoleOfToken("/* ... */");
                     com = "";
                     file >> next_ch;
-                    com += next_ch;
+                   
                 }
                 else if (file.eof()) {
-                    cout << "Invalid token: " << com << endl;
+                    printRoleOfToken(com);
                     com = "";
                     break;
                 }
@@ -319,6 +318,7 @@ void lexicalAnalyze(const string& nameOfFile)
             continue;
         }
         if (singleCm) {
+            
             com += ch;
             if (ch == '\n') {
                 singleCm = false;
@@ -332,17 +332,20 @@ void lexicalAnalyze(const string& nameOfFile)
             char next_ch;
             com += ch;
             file >> next_ch;
+            
             if (next_ch == '*') {
                 com += next_ch;
                 multiCm = true;
                 continue;
             }
             else if (next_ch == '/') {
+
                 singleCm = true;
                 com += next_ch;
                 continue;
             }
             else {
+                com = "";
                 file.unget(); 
             }
             
@@ -354,18 +357,6 @@ void lexicalAnalyze(const string& nameOfFile)
             buf += ch;
             file >> next_ch;
             if (special(buf + next_ch)) {
-                if (buffer[0] == '"') {
-                    char next;
-                    buf += next_ch;
-                    file >> next;
-                    if (next!=' ') {
-                        woh = false;
-                        file.unget();
-                        buffer += buf;
-                        continue;
-                        
-                    }
-                }
                 if (woh) {
                     buf += next_ch;
                     T woh = { buf,"sc" };
@@ -420,8 +411,7 @@ void lexicalAnalyze(const string& nameOfFile)
             }
             
         }
-        //+=
-        if (!aOperator(string(1, ch)) && aOperator(buffer) &&isOperator(buffer+ch)&& buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (!aOperator(string(1, ch)) && aOperator(buffer) &&isOperator(buffer+ch)&& buffer[0] != '"' && buffer[0] != '\'') 
         {
             buffer += ch;
             if (!buffer.empty())
@@ -431,8 +421,7 @@ void lexicalAnalyze(const string& nameOfFile)
                 continue;
             }
         }
-        //++
-        if (aOperator(string(1, ch)) && aOperator(buffer) && isOperator(buffer + ch) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (aOperator(string(1, ch)) && aOperator(buffer) && isOperator(buffer + ch) && buffer[0] != '"' && buffer[0] != '\'') 
         {
             buffer += ch;
             if (!buffer.empty())
@@ -442,7 +431,7 @@ void lexicalAnalyze(const string& nameOfFile)
                 continue;
             }
         }
-        if (isOperator(string(1, ch)) && isOperator(buffer) && aOperator(buffer + ch) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (isOperator(string(1, ch)) && isOperator(buffer) && aOperator(buffer + ch) && buffer[0] != '"' && buffer[0] != '\'') 
         {
             buffer += ch;
             if (!buffer.empty())
@@ -452,7 +441,7 @@ void lexicalAnalyze(const string& nameOfFile)
                 continue;
             }
         }
-        if (aOperator(string(1, ch)) && aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (aOperator(string(1, ch)) && aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') 
         {
 
 
@@ -463,7 +452,7 @@ void lexicalAnalyze(const string& nameOfFile)
                 buffer = "";
             }
         }
-        if (aOperator(string(1, ch)) && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (aOperator(string(1, ch)) && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') 
         {
           
             
@@ -491,7 +480,7 @@ void lexicalAnalyze(const string& nameOfFile)
             }
             continue;
         }
-        if (isOperator(string(1, ch)) && !isOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (isOperator(string(1, ch)) && !isOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') 
         {
             if (!buffer.empty())
             {
@@ -499,7 +488,7 @@ void lexicalAnalyze(const string& nameOfFile)
                 buffer = "";
             }
         }
-        if (isOperator(string(1, ch)) && isOperator(buffer) &&!isOperator(buffer+ch) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (isOperator(string(1, ch)) && isOperator(buffer) &&!isOperator(buffer+ch) && buffer[0] != '"' && buffer[0] != '\'') 
         {
             if (!buffer.empty())
             {
@@ -561,7 +550,7 @@ void lexicalAnalyze(const string& nameOfFile)
 int main()
 {
 
-    lexicalAnalyze("D:\\ASU\\spring24\\Compilers\\project\\Cpp_compiler\\Cfile.txt");
+    lexicalAnalyze("C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt");
     for (const auto& token : Tokens)
         cout << "(" << token.id << "," << token.type << ")"<<endl;
 
