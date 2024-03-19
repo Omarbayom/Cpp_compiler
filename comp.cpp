@@ -201,13 +201,8 @@ bool special(const string& str)
 }
 
 bool isDigit(const string& str) {
-    regex decimalRegex("(\\+|-)?\\d+");
-    regex octalRegex("(\\+|-)?0[0-7]+");
-    regex hexadecimalRegex("(\\+|-)?0[xX][0-9a-fA-F]+");
-    regex binaryRegex("(\\+|-)?0[bB][01]+");
-
-    return regex_match(str, decimalRegex) || regex_match(str, octalRegex) ||
-           regex_match(str, hexadecimalRegex) || regex_match(str, binaryRegex);
+    regex digitRegex("(\\+|-)?^\\d+$");
+    return regex_match(str, digitRegex);
 }
 
 bool isString(const string& str) 
@@ -354,18 +349,6 @@ void lexicalAnalyze(const string& nameOfFile)
             buf += ch;
             file >> next_ch;
             if (special(buf + next_ch)) {
-                if (buffer[0] == '"') {
-                    char next;
-                    buf += next_ch;
-                    file >> next;
-                    if (next!=' ') {
-                        woh = false;
-                        file.unget();
-                        buffer += buf;
-                        continue;
-                        
-                    }
-                }
                 if (woh) {
                     buf += next_ch;
                     T woh = { buf,"sc" };
@@ -420,7 +403,6 @@ void lexicalAnalyze(const string& nameOfFile)
             }
             
         }
-        //+=
         if (!aOperator(string(1, ch)) && aOperator(buffer) &&isOperator(buffer+ch)&& buffer[0] != '"' && buffer[0] != '\'') // try to merge
         {
             buffer += ch;
@@ -431,7 +413,6 @@ void lexicalAnalyze(const string& nameOfFile)
                 continue;
             }
         }
-        //++
         if (aOperator(string(1, ch)) && aOperator(buffer) && isOperator(buffer + ch) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
         {
             buffer += ch;
@@ -491,7 +472,7 @@ void lexicalAnalyze(const string& nameOfFile)
             }
             continue;
         }
-        if (isOperator(string(1, ch)) && !isOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (isOperator(string(1, ch)) && !isOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') 
         {
             if (!buffer.empty())
             {
@@ -499,7 +480,7 @@ void lexicalAnalyze(const string& nameOfFile)
                 buffer = "";
             }
         }
-        if (isOperator(string(1, ch)) && isOperator(buffer) &&!isOperator(buffer+ch) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        if (isOperator(string(1, ch)) && isOperator(buffer) &&!isOperator(buffer+ch) && buffer[0] != '"' && buffer[0] != '\'') 
         {
             if (!buffer.empty())
             {
@@ -561,7 +542,7 @@ void lexicalAnalyze(const string& nameOfFile)
 int main()
 {
 
-    lexicalAnalyze("D:\\ASU\\spring24\\Compilers\\project\\Cpp_compiler\\Cfile.txt");
+    lexicalAnalyze("C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt");
     for (const auto& token : Tokens)
         cout << "(" << token.id << "," << token.type << ")"<<endl;
 
