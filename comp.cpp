@@ -201,8 +201,13 @@ bool special(const string& str)
 }
 
 bool isDigit(const string& str) {
-    regex digitRegex("(\\+|-)?^\\d+$");
-    return regex_match(str, digitRegex);
+    regex decimalRegex("(\\+|-)?\\d+");
+    regex octalRegex("(\\+|-)?0[0-7]+");
+    regex hexadecimalRegex("(\\+|-)?0[xX][0-9a-fA-F]+");
+    regex binaryRegex("(\\+|-)?0[bB][01]+");
+
+    return regex_match(str, decimalRegex) || regex_match(str, octalRegex) ||
+           regex_match(str, hexadecimalRegex) || regex_match(str, binaryRegex);
 }
 
 bool isString(const string& str) 
@@ -556,7 +561,7 @@ void lexicalAnalyze(const string& nameOfFile)
 int main()
 {
 
-    lexicalAnalyze("C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt");
+    lexicalAnalyze("D:\\ASU\\spring24\\Compilers\\project\\Cpp_compiler\\Cfile.txt");
     for (const auto& token : Tokens)
         cout << "(" << token.id << "," << token.type << ")"<<endl;
 
