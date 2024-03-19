@@ -6,11 +6,12 @@
 
 using namespace std;
 
-//\letters task(\n)
-//have a problem with *
+// \nniudgfdj  member access
+// vector -> vlaue
+// 0x for b,h,d,O
+// signed digits
+// e^ay 7aga
 
-
-//*****************************************************************************************
 struct T {
     string id;
     string type;
@@ -25,7 +26,7 @@ bool isOperator(const string& code) {
 
 }
 bool aOperator(const string& code) {
-    regex opRegex("(\\+|-|\\*|/|%|\\^|&|\\||<<|>>|(\\+-)+\\+?|(-\\+)+-?)");
+    regex opRegex("(\\+|-|\\*|/|%|\\^|&|\\||<<|>>)");
     return regex_match(code, opRegex);
 
 }
@@ -230,7 +231,7 @@ bool isNotLegal(const string& str)
     return str == " " || str == "\n";
 }
 
-void printRoleOfToken(const string& token) // good el good ma3ada el else
+void printRoleOfToken(const string& token) 
 {
     bool valid=true;
     T woh;
@@ -271,7 +272,7 @@ void printRoleOfToken(const string& token) // good el good ma3ada el else
         Tokens.push_back(woh);
 }
 
-void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
+void lexicalAnalyze(const string& nameOfFile) 
 {
     char ch;
     string buffer;
@@ -371,7 +372,6 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             }
             else {
                 file.unget();
-                // woh Depresso was here & broccoli
             }
         }
         if ((ch == '-') && buffer[0] != '"' && buffer[0] != '\'') {
@@ -389,11 +389,10 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             }
             else {
                 file.unget();
-                // woh Depresso was here & broccoli
                 }
 
         }
-        if ((ch == '*' || ch == '&') && (Tokens[Tokens.size() - 1].type != "id"|| Tokens[Tokens.size() - 1].type != "li") && Tokens[Tokens.size() - 1].id != "&" && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') {
+        if ((ch == '*' || ch == '&') && (Tokens[Tokens.size() - 1].type != "id"|| Tokens[Tokens.size() - 1].type != "li") && buffer != "&" && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') {
             string buf;
             char next_ch;
             buf += ch;
@@ -408,15 +407,56 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             }
             else {
                 file.unget();
-                if (buffer.empty()) { 
-                    T woh = { string(1,ch),"ma"};
-                    Tokens.push_back(woh);
-                    continue;
+                 T woh = { string(1,ch),"ma"};
+                 Tokens.push_back(woh);
+                 continue;
 
-                }
 
             }
             
+        }
+        //+=
+        if (!aOperator(string(1, ch)) && aOperator(buffer) &&isOperator(buffer+ch)&& buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        {
+            buffer += ch;
+            if (!buffer.empty())
+            {
+                printRoleOfToken(buffer);
+                buffer = "";
+                continue;
+            }
+        }
+        //++
+        if (aOperator(string(1, ch)) && aOperator(buffer) && isOperator(buffer + ch) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        {
+            buffer += ch;
+            if (!buffer.empty())
+            {
+                printRoleOfToken(buffer);
+                buffer = "";
+                continue;
+            }
+        }
+        if (isOperator(string(1, ch)) && isOperator(buffer) && aOperator(buffer + ch) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        {
+            buffer += ch;
+            if (!buffer.empty())
+            {
+                printRoleOfToken(buffer);
+                buffer = "";
+                continue;
+            }
+        }
+        if (aOperator(string(1, ch)) && aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        {
+
+
+            if (!buffer.empty())
+            {
+
+                printRoleOfToken(buffer);
+                buffer = "";
+            }
         }
         if (aOperator(string(1, ch)) && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
         {
@@ -429,6 +469,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
                 buffer = "";
             }
         }
+        
 
         if (!aOperator(string(1, ch)) && aOperator(buffer))
         {
@@ -446,6 +487,14 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
             continue;
         }
         if (isOperator(string(1, ch)) && !isOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
+        {
+            if (!buffer.empty())
+            {
+                printRoleOfToken(buffer);
+                buffer = "";
+            }
+        }
+        if (isOperator(string(1, ch)) && isOperator(buffer) &&!isOperator(buffer+ch) && buffer[0] != '"' && buffer[0] != '\'') // try to merge
         {
             if (!buffer.empty())
             {
@@ -475,6 +524,7 @@ void lexicalAnalyze(const string& nameOfFile) // tmam bs 8ir 7war comments
         }
         
         buffer += ch;
+
         if (buffer[0] == '\'' && buffer.size() != 1&&ch=='\'') {
             buffer.erase(remove(buffer.begin(), buffer.end(), ' '), buffer.end());
             printRoleOfToken(buffer);
