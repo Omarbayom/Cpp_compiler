@@ -1,8 +1,17 @@
-xyz =-354657;
+xyz =-5;
+x=078
+x=0xA5bdo
+x=0xA5bd
+x=0b12
+x=0b10
+
 double ;
 for (int i =0;i<x;5++){
 cout<< "yasser 3sl/**/ \" x+5=12";
 printf("omar osama"); 
+++5
+5+6
+5+-6
 ===
 +=
 +*/
@@ -16,7 +25,7 @@ x='\n'
 x="\tamer"
 int* woh;
 +-+-+-+-+-i;
-}
+}//ahmed
 //ngjkdjggg int
 /*gfnsgfnjgfs;ff
 //kmuibib
