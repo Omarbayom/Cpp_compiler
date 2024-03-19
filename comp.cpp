@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include <sstream>
 
 using namespace std;
 
@@ -280,14 +281,10 @@ void lexicalAnalyze(const string& nameOfFile)
 {
     char ch;
     string buffer;
-    fstream file(nameOfFile, fstream::in);
+    istringstream file(nameOfFile);
 
 
-    if (!file.is_open())
-    {
-        cout << "error while opening the file\n";
-        exit(0);
-    }
+   
     bool multiCm = false, singleCm = false;
     
     while (file >> noskipws >> ch)
@@ -304,11 +301,6 @@ void lexicalAnalyze(const string& nameOfFile)
                     com = "";
                     file >> next_ch;
                    
-                }
-                else if (file.eof()) {
-                    printRoleOfToken(com);
-                    com = "";
-                    break;
                 }
                 else {
                     file.unget();
@@ -544,15 +536,39 @@ void lexicalAnalyze(const string& nameOfFile)
         
     }
 
-    file.close();
+    if (!buffer.empty()) {
+        printRoleOfToken(buffer);
+    }
+    if (!com.empty()) {
+        printRoleOfToken(com);
+    }
+}
+string readFileToString(const string& filename) {
+    ifstream file(filename); // Open file
+    stringstream buffr; // String stream to hold file contents
+    string line;
+
+    if (file.is_open()) {
+        // Read file line by line
+        while (getline(file, line)) {
+            buffr << line << std::endl; // Append line to buffer
+        }
+        file.close(); // Close file
+        return buffr.str(); // Return the contents of the buffer as a string
+    }
+    else {
+        // If file cannot be opened, return an empty string
+        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        return "";
+    }
 }
 
 int main()
 {
-
-    lexicalAnalyze("C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt");
+    string file = "C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt";
+    string fileContents = readFileToString(file);
+    lexicalAnalyze(fileContents);
     for (const auto& token : Tokens)
         cout << "(" << token.id << "," << token.type << ")"<<endl;
-
     return 0;
 }
