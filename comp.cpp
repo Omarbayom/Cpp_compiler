@@ -214,9 +214,14 @@ bool isString(const string& str)
     return (str[0] == '"' && str[str.size() - 1] == '"') || (regex_match(str,pattern));
 }
 
+bool isExponential(const string& str) {
+    regex exponentialRegex("(\\+|-)?(\\d+(\\.\\d*)?)([eE][-+]?\\d+)?");
+    return regex_match(str, exponentialRegex);
+}
+
 bool isLiteral(const string& str)
 {
-    return isDigit(str) || isString(str);
+    return isExponential(str) || isDigit(str) || isString(str);
 }
 
 bool isSeparator(const string& str) 
@@ -379,6 +384,24 @@ void lexicalAnalyze(const string& nameOfFile)
                 file.unget();
                 }
 
+        }
+        if (ch == '.') {
+            // Check if the dot is followed by a digit
+            char next_ch;
+            file >> next_ch;
+            if (isdigit(next_ch)) {
+                buffer += ch;
+                buffer += next_ch;
+                while (file >> next_ch && (isdigit(next_ch) || next_ch == '.' || tolower(next_ch) == 'e' || next_ch == '+' || next_ch == '-')) {
+                    buffer += next_ch;
+                }
+                printRoleOfToken(buffer);
+                buffer = "";
+                continue;
+            }
+            else {
+                file.unget();
+            }
         }
         if ((ch == '*' || ch == '&') && (Tokens[Tokens.size() - 1].type != "id"|| Tokens[Tokens.size() - 1].type != "li") && buffer != "&" && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') {
             string buf;
