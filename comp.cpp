@@ -215,7 +215,7 @@ bool isString(const string& str)
 }
 
 bool isExponential(const string& str) {
-    regex exponentialRegex("(\\+|-)?(\\d*(\\.\\d+))([eE][-+]?\\d+)?");
+    regex exponentialRegex("(\\+|-)?(\\d*(\\.?\\d+))([eE][-|\\+]?\\d+)?");
     return regex_match(str, exponentialRegex);
 }
 
@@ -395,9 +395,9 @@ void lexicalAnalyze(const string& nameOfFile)
         if (tolower(ch) == 'e' && buffer[0] != '"' && buffer[0] != '\''&&!isID(buffer)) {
             char next_ch;
             file >> next_ch;
-            if ((next_ch == '+') || (next_ch == '-') || (isDigit(string(1, next_ch)))) {
+            if ((next_ch == '+') || (next_ch == '-') || (isDigit(string(1, next_ch)))) { 
                 buffer += ch;
-                file.unget();
+                buffer += next_ch;
                 continue;
             }
             else {

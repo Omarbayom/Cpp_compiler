@@ -1,13 +1,16 @@
+/*gfnsgfnjgfs;ff
+//kmuibib
+*/
 .5
 5.5
 e51
 emad
-x = 1.2e-3.1;
+x = 1.2e3.1;
 x = 1..25e453;
-x=12E55;
+x=-12E-55;
 x=12.E55;
 x=155.266E+55;
-x= 1.e4;
+x= 1e+4;
 
 int x5e13;
 
@@ -40,9 +43,7 @@ int* woh;
 +-+-+-+-+-i;
 }//ahmed
 //ngjkdjggg int
-/*gfnsgfnjgfs;ff
-//kmuibib
-*/
+
 /*fgjnfgnfkjlgfgfg
 gfnnshlfdnhdfh*/
 int x =0;
