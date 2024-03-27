@@ -7,14 +7,12 @@
 
 using namespace std;
 
-
-
 struct T {
     string id;
     string type;
 };
-
 vector<T> Tokens;
+string com = "";
 
 bool isOperator(const string& code) {
 
@@ -76,7 +74,7 @@ bool isDigit(const string& str) {
 
 bool isString(const string& str)
 {
-    regex pattern("'((.?)|\\\\[nrtbvaf])'");
+    regex pattern("'((.)|\\\\[nrtbvaf])'");
     return (str[0] == '"' && str[str.size() - 1] == '"') || (regex_match(str, pattern));
 }
 
@@ -105,7 +103,7 @@ bool isNotLegal(const string& str)
 {
     return str == " " || str == "\n"||str=="\t";
 }
-string com = "";
+
 void printRoleOfToken(const string& token)
 {
     T woh;
@@ -393,7 +391,7 @@ void lexicalAnalyze(const string& nameOfFile)
             printRoleOfToken(buffer);
             buffer = "";
         }
-        if (buffer[0] == '"' && ch == '\n') {
+        if (buffer[0] == '"' && ch == '\n') { 
 
             while (file >> noskipws >> ch) {
                 if (ch == '"')
