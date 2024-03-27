@@ -1,4 +1,5 @@
 #include<stdio.h>
+
 int main() {
     // Testing different types of tokens
     int _num = 123;
@@ -19,11 +20,15 @@ int main() {
     int num = 16;
     num >>= 2; 
     >>
+    >=
     >
+    ++
+    +
     typedef unsigned long ulong;
     short smallNum = 10;
     signed int temperature = -10;
     //Testing different types of tokens invaild
+    char x='    t   '; 
     int x = e51;
     x = 1..25e453;
     x = 1.2e3.1;
@@ -33,7 +38,6 @@ int main() {
     int fr#dsag;
     string x ="ana
     ahmed";
-    string y="ana ahmed';
     // Arithmetic operations
     int sum = num1 + num2;
     int difference = num2 - num1;

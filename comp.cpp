@@ -34,152 +34,14 @@ bool detectMemberAccess(const string& input) {
     return regex_match(input, pattern);
 }
 
-bool KeywordRegex(string pattern)
-{
-    if (pattern == "\\bauto\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bbreak\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bcase\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bchar\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bconst\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bcontinue\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bdefault\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bdo\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bdouble\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\belse\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\benum\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bextern\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bfloat\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bfor\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bgoto\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bif\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\binline\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bint\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\blong\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bregister\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bRestrict\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\breturn\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bshort\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bsigned\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bsizeof\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bstatic\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bstruct\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bswitch\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\btypedef\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bunion\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bunsigned\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bvoid\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bvolatile\\b")
-    {
-        return true;
-    }
-    else if (pattern == "\\bwhile\\b")
-    {
-        return true;
-    }
-    else
-        return false;
-}
-
-bool KeywordPattern(const string& keyword)
-{
-    string pattern = "\\b" + keyword + "\\b";
-    return KeywordRegex(pattern);
+bool KeywordRegex(const string& pattern) {
+    static const regex keywords_regex(
+        "(auto|break|case|char|const|continue|default|do|double|else|enum|"
+        "extern|float|for|goto|if|inline|int|long|register|restrict|return|"
+        "short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|"
+        "volatile|while)"
+    );
+    return regex_match(pattern, keywords_regex);
 }
 
 bool isID(const string& str) {
@@ -198,7 +60,11 @@ bool special(const string& str)
 }
 
 bool isDigit(const string& str) {
+    //float x = .5;
+    //float x = 1.5;
     regex fRegex("(\\+|-)?(\\d+)?(\\.\\d+)");
+    //float x = 1.;
+    //float x = 1.5;
     regex decimalRegex("(\\+|-)?\\d+(\\.\\d*)?");
     regex octalRegex("(\\+|-)?0[0-7]+");
     regex hexadecimalRegex("(\\+|-)?0[xX][0-9a-fA-F]+");
@@ -216,9 +82,8 @@ bool isString(const string& str)
 
 bool isExponential(const string& str) {
     regex exponentialRegex("(\\+|-)?(\\d*(\\.\\d+))([eE][-|\\+]?\\d+)?");
-    regex exponentialRegex1("(\\+|-)?(\\d+(\\.\\d*))([eE][-|\\+]?\\d+)?");
     regex exponentialRegex2("(\\+|-)?(\\d+(\\.\\d*)?)([eE][-|\\+]?\\d+)?");
-    return regex_match(str, exponentialRegex)|| regex_match(str, exponentialRegex1) || regex_match(str, exponentialRegex2);
+    return regex_match(str, exponentialRegex) || regex_match(str, exponentialRegex2);
 }
 
 bool isLiteral(const string& str)
@@ -263,7 +128,7 @@ void printRoleOfToken(const string& token)
     else if (isSeparator(token)) {
         woh = { token,"sp" };
     }
-    else if (KeywordPattern(token)) {
+    else if (KeywordRegex(token)) {
         woh = { token,"kw" };
     }
     else if (isLiteral(token)) {
@@ -521,14 +386,10 @@ void lexicalAnalyze(const string& nameOfFile)
                 buffer = "";
             }
             printRoleOfToken(string(1, ch));
-            continue;
-            
+            continue;    
         }
-
         buffer += ch;
-
         if (buffer[0] == '\'' && buffer.size() != 1 && ch == '\'') {
-            buffer.erase(remove(buffer.begin(), buffer.end(), ' '), buffer.end());
             printRoleOfToken(buffer);
             buffer = "";
         }
@@ -547,11 +408,7 @@ void lexicalAnalyze(const string& nameOfFile)
             printRoleOfToken(buffer);
             buffer = "";
         }
-
-
-
     }
-
     if (!buffer.empty()) {
         printRoleOfToken(buffer);
     }
@@ -559,6 +416,7 @@ void lexicalAnalyze(const string& nameOfFile)
         printRoleOfToken(com);
     }
 }
+
 string readFileToString(const string& filename) {
     ifstream file(filename);
     stringstream buffr;
@@ -580,7 +438,6 @@ string readFileToString(const string& filename) {
 
 int main()
 {
-    string file = "C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt";
     string file1 = "C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Testfile.txt";
     string fileContents = readFileToString(file1);
     lexicalAnalyze(fileContents);
