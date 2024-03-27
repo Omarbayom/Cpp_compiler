@@ -228,7 +228,7 @@ bool isLiteral(const string& str)
 
 bool isSeparator(const string& str)
 {
-    const vector<string> Separators{ "{", "}", ",", "(", ")", ";",".","?",":" };
+    const vector<string> Separators{ "{", "}", ",", "(", ")",";","?",":"};
     for (const auto& separate : Separators)
         if (separate == str)
             return true;
@@ -238,7 +238,7 @@ bool isSeparator(const string& str)
 
 bool isNotLegal(const string& str)
 {
-    return str == " " || str == "\n";
+    return str == " " || str == "\n"||str=="\t";
 }
 string com = "";
 void printRoleOfToken(const string& token)
@@ -257,6 +257,9 @@ void printRoleOfToken(const string& token)
         woh = { token,"aop" };
 
     }
+    else if (detectMemberAccess(token)) {
+        woh = { token,"ma" };
+    }
     else if (isSeparator(token)) {
         woh = { token,"sp" };
     }
@@ -269,10 +272,6 @@ void printRoleOfToken(const string& token)
     else if (isID(token)) {
         woh = { token,"id" };
     }
-    else if (detectMemberAccess( token)) {
-        woh = { token,"ma" };
-    }
-
     else {
         if (token[0] == '"')
             woh = { token + '"',"inv" };
@@ -280,8 +279,9 @@ void printRoleOfToken(const string& token)
             woh = { token ,"inv" };
 
     }
-
-    Tokens.push_back(woh);
+    if (token != "") {
+        Tokens.push_back(woh);
+    }
 }
 
 void lexicalAnalyze(const string& nameOfFile)
@@ -383,7 +383,7 @@ void lexicalAnalyze(const string& nameOfFile)
             }
 
         }
-        if (ch == '.' && buffer[0] != '"' && buffer[0] != '\''&&(isDigit(buffer)||isExponential(buffer)||buffer=="")) {
+        if (ch == '.' && buffer[0] != '"' && buffer[0] != '\''&&(isDigit(buffer)||isExponential(buffer)||buffer=="")&&(Tokens[Tokens.size() - 1].type != "id")&&(!isID(buffer))) {
             buffer += ch;
             continue;
            
@@ -416,6 +416,8 @@ void lexicalAnalyze(const string& nameOfFile)
             }
             else {
                 file.unget();
+                printRoleOfToken(buffer);
+                buffer = "";
                 T woh = { string(1,ch),"ma" };
                 Tokens.push_back(woh);
                 continue;
@@ -511,7 +513,7 @@ void lexicalAnalyze(const string& nameOfFile)
             buffer = "";
         }
 
-        if (isSeparator(string(1, ch)) && buffer[0] != '"' && buffer[0] != '\'')
+        if ((isSeparator(string(1, ch))||detectMemberAccess(string(1, ch))) && buffer[0] != '"' && buffer[0] != '\'')
         {
             if (!buffer.empty())
             {
@@ -575,10 +577,12 @@ string readFileToString(const string& filename) {
     }
 }
 
+
 int main()
 {
     string file = "C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Cfile.txt";
-    string fileContents = readFileToString(file);
+    string file1 = "C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Testfile.txt";
+    string fileContents = readFileToString(file1);
     lexicalAnalyze(fileContents);
     for (const auto& token : Tokens)
         cout << "(" << token.id << "," << token.type << ")" << endl;
