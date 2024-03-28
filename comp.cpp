@@ -264,31 +264,31 @@ void lexicalAnalyze(const string& nameOfFile)
             }
         }
 
-        if ((ch == '*' || ch == '&') && (Tokens[Tokens.size() - 1].type != "id" || Tokens[Tokens.size() - 1].type != "li") && buffer != "&" && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') {
-            string buf;
-            char next_ch;
-            buf += ch;
-            file >> next_ch;
-            if (isOperator(buf + next_ch)) {
-                buf += next_ch;
-                T woh = { buf,"op" };
-                printRoleOfToken(buffer);
-                buffer = "";
-                Tokens.push_back(woh);
-                continue;
-            }
-            else {
-                file.unget();
-                printRoleOfToken(buffer);
-                buffer = "";
-                T woh = { string(1,ch),"ma" };
-                Tokens.push_back(woh);
-                continue;
+    if ((ch == '*' || ch == '&') && (Tokens[Tokens.size() - 1].type != "id" &&!isID(buffer) && !isLiteral(buffer) && Tokens[Tokens.size() - 1].type != "li") && buffer != "&" && !aOperator(buffer) && buffer[0] != '"' && buffer[0] != '\'') {
+        string buf;
+        char next_ch;
+        buf += ch;
+        file >> next_ch;
+        if (isOperator(buf + next_ch)) {
+            buf += next_ch;
+            T woh = { buf,"op" };
+            printRoleOfToken(buffer);
+            buffer = "";
+            Tokens.push_back(woh);
+            continue;
+        }
+        else {
+            file.unget();
+            printRoleOfToken(buffer);
+            buffer = "";
+            T woh = { string(1,ch),"ma" };
+            Tokens.push_back(woh);
+            continue;
 
-
-            }
 
         }
+    }
+
         if (!aOperator(string(1, ch)) && aOperator(buffer) && isOperator(buffer + ch) && buffer[0] != '"' && buffer[0] != '\'')
         {
             buffer += ch;
@@ -436,7 +436,7 @@ string readFileToString(const string& filename) {
 
 int main()
 {
-    string file1 = "C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Testfile.txt";
+    string file1 = "D:\\ASU\\spring24\\Compilers\\project\\Cpp_compiler\\Testfile.txt";
     string fileContents = readFileToString(file1);
     lexicalAnalyze(fileContents);
     for (const auto& token : Tokens)
