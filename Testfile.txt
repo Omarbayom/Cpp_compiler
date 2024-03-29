@@ -1,5 +1,4 @@
 #include<stdio.h>
-
 int main() {
     // Testing different types of tokens
     int _num = 123;
@@ -103,7 +102,7 @@ int main() {
     p.x = 10;
     p.y = 20;
     Point* p2 = &p1;
-    int **x;
+    int**x;
     p2->x;
 
     return 0;
