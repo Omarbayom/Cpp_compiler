@@ -1,2 +1,2 @@
 # C_compiler Usnig C++
-##This is the lexal analyzer 
+## This is the lexal analyzer 
