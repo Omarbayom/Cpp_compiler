@@ -10,6 +10,7 @@ using namespace std;
 struct T {
     string id;
     string type;
+    int level;
 };
 vector<T> Tokens;
 string com = "";
@@ -37,7 +38,7 @@ bool KeywordRegex(const string& pattern) {
         "(auto|break|case|char|const|continue|default|do|double|else|enum|"
         "extern|float|for|goto|if|inline|int|long|register|restrict|return|"
         "short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|"
-        "volatile|while|_Alignas|_Alignof|_Atomic|_Bool|_Complex|_Generic|_Imaginary|_Noreturn|_Static_assert|_Thread_local)"
+        "volatile|while)"
     );
     return regex_match(pattern, keywords_regex);
 }
@@ -432,14 +433,37 @@ string readFileToString(const string& filename) {
         return "";
     }
 }
-
+void processTokens(vector<T>& tokens) {
+    int level1 = 0;
+    auto it = tokens.begin();
+    while (it != tokens.end()) {
+        if (it->id == "{") {
+            level1+=1;
+            it->level = level1;
+        }
+        else if (it->id == "}") {
+            it->level = level1;
+            level1 -= 1;
+        }
+        else if (it->type == "inv"||it->type == "com") {
+            it = tokens.erase(it); 
+            continue; 
+        }
+        else {
+            it->level = level1;
+        }
+        
+        ++it;
+    }
+}
 
 int main()
 {
     string file1 = "C:\\Users\\dell\\Desktop\\Compiler\\project\\comp\\Testfile.txt";
     string fileContents = readFileToString(file1);
     lexicalAnalyze(fileContents);
+    processTokens(Tokens);
     for (const auto& token : Tokens)
-        cout << "(" << token.id << "," << token.type << ")" << endl;
+        cout << "(" << token.id << "," << token.type <<","<<token.level << ")" << endl;
     return 0;
 }
