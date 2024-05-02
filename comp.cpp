@@ -4,6 +4,7 @@
 #include <vector>
 #include <regex>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -456,6 +457,8 @@ void processTokens(vector<T>& tokens) {
         ++it;
     }
 }
+
+
 
 int main()
 {
