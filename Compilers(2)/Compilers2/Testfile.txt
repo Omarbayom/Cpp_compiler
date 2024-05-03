@@ -1,0 +1,111 @@
+#include<stdio.h>
+int main() {
+    // Testing different types of tokens
+    int _num = 123;
+    char c_h = 'a';
+    char ch1 ='\n';
+    string woh="abcde";
+    string woh2="abc\tamer";
+    string woh3="/*int x;*/ \" x+5=12";	
+    float flt = 3.14;
+    double dbl = 2.71828;
+    int x=078;
+    int x1=0xA5bd;
+    int x2=0b10;
+    float x3 = 1.2e3;
+    float x4=-12E-55;
+    float x5=12.E55;
+    float x6= .1e+4;
+    int num = 16;
+    num >>= 2; 
+    >>
+    >=
+    >
+    ++
+    +
+    typedef unsigned long ulong;
+    short smallNum = 10;
+    signed int temperature = -10;
+    //Testing different types of tokens invaild
+    char x='    t   '; 
+    int x = e51;
+    x = 1..25e453;
+    x = 1.2e3.1;
+    int 7xi;
+    x=0b12;
+    x=0xA5bdv;
+    int fr#dsag;
+    string x ="ana
+    ahmed";
+    // Arithmetic operations
+    int sum = num1 + num2;
+    int difference = num2 - num1;
+    int product = num1 * num2;
+    float quotient = (float)num1 / num2;
+    int remainder = num2 % num1;
+    int result = 10 << 2;
+    int x1=+-+-+-+-+-+-+5;
+    // Logical operations
+    int logicalAnd = (num1 > 5) && (num2 < 30);
+    int logicalOr = (num1 == 10) || (num2 != 20);
+    int logicalNot = !(num1 < 5);
+    // Relational operations
+    int isEqual = (num1 == num2);
+    int isNotEqual = (num1 != num2);
+    int isGreater = (num1 > num2);
+    int isLess = (num1 < num2);
+    int isGreaterOrEqual = (num1 >= num2);
+    int isLessOrEqual = (num1 <= num2);
+    // Testing operators
+    int result = 10 + 20 * 30 / 5 - 8;
+    // Testing keywords
+    if (result > 0) {
+        printf("Result is positive\n");
+    } else if(result<0) {
+        printf("Result is non-positive\n");
+    }else {
+        printf("Result is zero\n");
+    }
+    switch(num) {
+    case 1:
+        printf("Case 1\n");
+        break;
+    case 2:
+        printf("Case 2\n");
+        break;
+    default:
+        printf("Default case\n");
+      } 	
+      do {
+        printf("Hello\n");
+	} while (condition);
+      void func() {
+       // Code
+       }
+
+      enum Days { MON, TUE, WED, THU, FRI, SAT, SUN };
+      int int =10;
+    // Testing comments
+    /* This is a multi-line
+       comment */
+    /*this is the c file that we test our code with
+    //and this is comment inside comment
+    show the result*/
+
+    // Testing member access
+    struct Point {
+        int x;
+        int y;
+    };
+    x[];
+    struct Point p;
+    p.x = 10;
+    p.y = 20;
+    Point* p2 = &p1;
+    int**x;
+    p2->x;
+
+    return 0;
+}
+/*fgjnfgnfkjlgfgfg
+gfnnshlfdnhdfh*
