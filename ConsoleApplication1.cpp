@@ -682,7 +682,27 @@ TreeNode* assignop(TreeNode* node);
 TreeNode* iterat(TreeNode* node);
 
 T currentToken;
+TreeNode* Expr(TreeNode* node,int x) {
+    TreeNode* exper = nullptr;
+    TreeNode* BoolExpr1 = new TreeNode("BoolExpr");
+    TreeNode* ArithExpr1 = new TreeNode("ArithExpr");
+    TreeNode* AssignExpr1 = new TreeNode("AssignExpr");
 
+    if (BoolExpr(BoolExpr1,x) != nullptr) {
+        node->addChild(BoolExpr1);
+        exper = BoolExpr1;
+    }
+    else if (ArithExpr(ArithExpr1) != nullptr) {
+        node->addChild(ArithExpr1);
+        exper = ArithExpr1;
+    }
+    else if (AssignExpr(AssignExpr1) != nullptr) {
+        node->addChild(AssignExpr1);
+        exper = AssignExpr1;
+    }
+
+    return exper;
+}
 bool match(const string& expectedId) {
     currentToken = getToken();
     if (currentToken.id == expectedId) {
@@ -747,7 +767,6 @@ void Pareser() {
 void Start(TreeNode* node) {
     int x = currentPos;
     TreeNode* decl = new TreeNode("Declaration");
-    cout << currentToken.id << 55555 << endl;
     if (Declaration(decl) != nullptr) {
         node->addChild(decl);
     }
@@ -964,11 +983,11 @@ TreeNode* Sinstmt(TreeNode* node) {
     TreeNode* pointerdecl1 = new TreeNode("pointerdecl");
     TreeNode* Decl1 = new TreeNode("Decl");
 
-    /*if (Expr(expr1,x) != nullptr) {
+    if (Expr(expr1,x) != nullptr) {
         node->addChild(expr1);
         sinstmtNode = expr1;
     }
-    else if (CondExpr(condexpr1,x) != nullptr) {
+    /*else if (CondExpr(condexpr1,x) != nullptr) {
         node->addChild(condexpr1);
         sinstmtNode = condexpr1;
     }
