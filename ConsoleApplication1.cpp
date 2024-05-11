@@ -1029,15 +1029,16 @@ TreeNode* ReturnExpr(TreeNode* node) {
     TreeNode* BoolExpr1 = new TreeNode("boolexpr");
     TreeNode* ArithExpr1 = new TreeNode("arithexpr");
     TreeNode* Variable1 = new TreeNode("variable");
+    int x = currentPos;
     if (match("1") || match("0")) {
         returnExprNode = new TreeNode(currentToken.id);
         node->addChild(returnExprNode);
     }
-    /*else if (BoolExpr(BoolExpr1) != nullptr) {
+    else if (BoolExpr(BoolExpr1,x) != nullptr) {
         node->addChild(BoolExpr1);
         returnExprNode = BoolExpr1;
         
-    }*/
+    }
     else if (ArithExpr(ArithExpr1) != nullptr) {
         node->addChild(ArithExpr1);
         returnExprNode = ArithExpr1;
@@ -1122,15 +1123,15 @@ TreeNode* ArgueExpr(TreeNode* node) {
     TreeNode* BoolExpr1 = new TreeNode("boolexpr");
     TreeNode* ArithExpr1 = new TreeNode("arithexpr");
     TreeNode* Variable1 = new TreeNode("variable");
-
+    int x = currentPos;
     if (ArithExpr(node) != nullptr) {
         node->addChild(ArithExpr1);
         argueExprNode = ArithExpr1;
     }
-   /* else if (BoolExpr(node) != nullptr) {
+    else if (BoolExpr(node,x) != nullptr) {
         node->addChild(ArithExpr1);
         argueExprNode = ArithExpr1;
-    }*/
+    }
     else if (Variable(node) != nullptr) {
         node->addChild(ArithExpr1);
         argueExprNode = ArithExpr1;
@@ -1140,6 +1141,51 @@ TreeNode* ArgueExpr(TreeNode* node) {
     return argueExprNode;
 }
 
+TreeNode* BoolExpr(TreeNode* node,int x) {
+    TreeNode* boolExprNode = nullptr;
+    currentPos = x;
+    boolExprNode = new TreeNode("Variable");
+    if (Variable(boolExprNode) != nullptr) {
+        node->addChild(boolExprNode);
+    }
+    TreeNode* boolOpNode = BoolOp(node);
+    if (boolOpNode != nullptr) {
+        boolExprNode->addChild(boolOpNode);
+
+        TreeNode* variable2 = Variable(node);
+        if (variable2 != nullptr) {
+            boolExprNode->addChild(variable2);
+        }
+        else {
+            // Handle error: expected variable after boolop
+        }
+    }
+    else {
+        // Handle error: expected boolop
+    }
+    
+
+    return boolExprNode;
+}
+
+TreeNode* BoolOp(TreeNode* node) {
+    TreeNode* boolOpNode = nullptr;
+
+    T token = getToken();
+    if (token.id == "==" || token.id == "!=" || token.id == ">=" || token.id == "<=" ||
+        token.id == ">" || token.id == "<" || token.id == "!" || token.id == "&&" ||
+        token.id == "||") {
+        boolOpNode = new TreeNode(token.id);
+        node->addChild(boolOpNode);
+    }
+    else {
+        // Retry without consuming anything
+        currentPos--;
+        boolOpNode = nullptr;
+    }
+
+    return boolOpNode;
+}
 
 
 TreeNode* Declaration(TreeNode* node) {
@@ -1758,8 +1804,54 @@ TreeNode* Variablel(TreeNode* node) {
 
 
 
+void findLeaves(TreeNode* node, vector<string>& leaves) {
+    if (node->next.empty()) {
+        // Node is a leaf, add its data to the list
+        leaves.push_back(node->data);
+    }
+    else {
+        // Node has children, recursively traverse them
+        for (TreeNode* child : node->next) {
+            findLeaves(child, leaves);
+        }
+    }
+}
 
 
+void findNotFoundTokens(const vector<T>& Tokens, const vector<string>& leaves) {
+    bool inSuccession = false;  // Flag to track if successive tokens are not found
+    for (const T& token : Tokens) {
+        // Flag to indicate whether the token is found in leaves
+        bool tokenFound = false;
+        // Compare the id of the token with the elements of leaves
+        for (const TreeNode leaf : leaves) {
+            if (token.id == leaf.data) {
+                tokenFound = true;
+                break;
+            }
+        }
+        // If the token is not found in leaves
+        if (!tokenFound) {
+            // If not already in succession, print the id
+            if (!inSuccession) {
+                cout << "Token(s) not found in leaf nodes:" << endl;
+                cout << token.id << endl;
+                inSuccession = true;  // Set flag to true for successive tokens
+            }
+        }
+        else {
+            inSuccession = false;  // Reset flag if token is found
+        }
+    }
+}
+
+vector<string> findLeafNodes(TreeNode* root) {
+    vector<string> leaves;
+    if (root)
+        findLeaves(root, leaves);
+    findNotFoundTokens(Tokens, leaves);
+    return leaves;
+}
 
 
 
@@ -1782,7 +1874,7 @@ int main()
     processTokens(Tokens);
     SymbolTable(Tokens);
     Pareser();
-    //findLeafNodes(root);
+    findLeafNodes(root);
     /*for (const auto& token : Symb)
         cout << "(" << token.id << "," << token.type << "," << token.level << ")" << endl;*/
     return 0;
