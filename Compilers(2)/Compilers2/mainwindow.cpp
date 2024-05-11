@@ -6,11 +6,13 @@
 #include <QTextEdit>
 #include <QSizePolicy>
 #include <QFile>
-
+#include "sample_table.h"
+#include "parsetree.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+
 {
     ui->setupUi(this);
     setupTable(); // Call the setupTable function
@@ -26,18 +28,18 @@ void MainWindow::setupTable()
     QString fileName = "D:\\Compilers(2)\\Compilers2\\Testfile.txt";
     QString fileContents = QString::fromStdString(l.readFileToString(fileName.toStdString()));
     l.lexicalAnalyze(fileContents.toStdString());
-
+    l.SymbolTable(l.Tokens);
     // Create the table widget
     table = new QTableWidget(this);
     table->setObjectName("tablewidget"); // Set the object name
-    table->setRowCount(l.Tokens.size());
+    table->setRowCount(l.Symb.size());
     table->setColumnCount(3); // Changed to 3 columns
-    table->setHorizontalHeaderLabels(QStringList() << "Token ID" << "Token Value" << "Line Number");
+    table->setHorizontalHeaderLabels(QStringList() << "Token Value" << "Token ID" << "Number");
 
-    for (size_t  row = 0; row < l.Tokens.size(); ++row)
+    for (size_t  row = 0; row < l.Symb.size(); ++row)
     {
-        QTableWidgetItem *tokenIDItem = new QTableWidgetItem(QString::fromStdString(l.Tokens[row].id));
-        QTableWidgetItem *tokenValueItem = new QTableWidgetItem(QString::fromStdString(l.Tokens[row].type));
+        QTableWidgetItem *tokenIDItem = new QTableWidgetItem(QString::fromStdString(l.Symb[row].id));
+        QTableWidgetItem *tokenValueItem = new QTableWidgetItem(QString::fromStdString(l.Symb[row].type));
         QTableWidgetItem *lineNumberItem = new QTableWidgetItem(QString::number(row + 1)); // Line number starts from 1
         table->setItem(row, 0, tokenIDItem);
         table->setItem(row, 1, tokenValueItem);
@@ -72,6 +74,21 @@ void MainWindow::setupTable()
     connect(compileButton, &QPushButton::clicked, this, &MainWindow::compileButtonClicked);
     layout->addWidget(compileButton);
     compileButton->setMaximumWidth(150);
+
+    QPushButton *SymbolTableButton = new QPushButton("Symbol Table",this);
+    connect(SymbolTableButton, &QPushButton::clicked, this, &MainWindow::switchPage);
+
+
+    // Add the switchPageButton to the layout
+    layout->addWidget(SymbolTableButton);
+    SymbolTableButton->setMaximumWidth(150);
+
+    QPushButton *ParseTreeButton = new QPushButton("Parse Tree",this);
+    connect(ParseTreeButton, &QPushButton::clicked, this, &MainWindow::switchToParse);
+
+    // Add the switchPageButton to the layout
+    layout->addWidget(ParseTreeButton);
+    ParseTreeButton->setMaximumWidth(150);
 }
 
 
@@ -92,14 +109,16 @@ void MainWindow::compileButtonClicked()
     QString fileName = "D:\\Compilers(2)\\Compilers2\\Testfile.txt";
     QString fileContents = QString::fromStdString(l.readFileToString(fileName.toStdString()));
     l.Tokens.clear();
+    l.Symb.clear();
 
     l.lexicalAnalyze(fileContents.toStdString());
     table->clearContents();
-    table->setRowCount(l.Tokens.size());
-    for (int row = 0; row < l.Tokens.size(); ++row)
+    l.SymbolTable(l.Tokens);
+    table->setRowCount(l.Symb.size());
+    for (int row = 0; row < l.Symb.size(); ++row)
     {
-        QTableWidgetItem *tokenIDItem = new QTableWidgetItem(QString::fromStdString(l.Tokens[row].id));
-        QTableWidgetItem *tokenValueItem = new QTableWidgetItem(QString::fromStdString(l.Tokens[row].type));
+        QTableWidgetItem *tokenIDItem = new QTableWidgetItem(QString::fromStdString(l.Symb[row].id));
+        QTableWidgetItem *tokenValueItem = new QTableWidgetItem(QString::fromStdString(l.Symb[row].type));
         QTableWidgetItem *lineNumberItem = new QTableWidgetItem(QString::number(row + 1)); // Line number starts from 1
         table->setItem(row, 0, tokenIDItem);
         table->setItem(row, 1, tokenValueItem);
@@ -108,6 +127,31 @@ void MainWindow::compileButtonClicked()
     saveFile();
 }
 
+void MainWindow::switchPage() {
+    QString fileName = "D:\\Compilers(2)\\Compilers2\\Testfile.txt";
+    QString fileContents = QString::fromStdString(l.readFileToString(fileName.toStdString()));
+    l.Tokens.clear();
+
+    l.lexicalAnalyze(fileContents.toStdString());
+    table->clearContents();
+    hide();
+    sample_table* s = new sample_table(l, this); // Pass the instance to sample_table
+    s->setModal(true);
+    s->exec();
+}
+
+void MainWindow::switchToParse() {
+    hide();
+    ParseTree* p = new ParseTree(l,this); // Pass the instance to sample_table
+    p->setModal(true);
+    p->exec();
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+    this->showMaximized();
+}
 
 
 

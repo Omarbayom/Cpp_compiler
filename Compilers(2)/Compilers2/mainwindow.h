@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTableWidget>
+#include <QStackedWidget>
 
 
 QT_BEGIN_NAMESPACE
@@ -23,9 +24,14 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 private slots:
     void saveFile();
     void compileButtonClicked();
+    void switchPage();
+    void switchToParse();
 
 private:
     Ui::MainWindow *ui;

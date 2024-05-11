@@ -1,4 +1,6 @@
 QT       += core gui
+QT       += svgwidgets
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,13 +14,19 @@ SOURCES += \
     comp.cpp \
     main.cpp \
     mainwindow.cpp\
+    parsetree.cpp \
+    sample_table.cpp
 
 HEADERS += \
     comp.h \
-    mainwindow.h
+    mainwindow.h \
+    parsetree.h \
+    sample_table.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    parsetree.ui \
+    sample_table.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
