@@ -2066,11 +2066,11 @@ TreeNode* AssignExpr(TreeNode* node) {
             
         }
         else {
-            // Handle error: Expected assignment operator
+            assignExprNode = nullptr;
         }
     }
     else {
-        // Handle error: Expected identifier
+        assignExprNode = nullptr;
     }
 
     return assignExprNode;
