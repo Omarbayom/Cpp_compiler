@@ -590,7 +590,6 @@ TreeNode* BoolExpr(TreeNode* node,int x);
 TreeNode* Funcall(TreeNode* node, int x);
 TreeNode* Argu(TreeNode* node);
 TreeNode* ArgueExpr(TreeNode* node);
-TreeNode* CondExpr(TreeNode* node);
 TreeNode* ElseExpr(TreeNode* node);
 TreeNode* CondExpr1(TreeNode* node);
 TreeNode* IterationStmt(TreeNode* node);
@@ -629,7 +628,6 @@ TreeNode* ExprStmtOpt(TreeNode* node);
 TreeNode* JumpStmt(TreeNode* node);
 TreeNode* Expr(TreeNode* node, int x);
 TreeNode* ExprOpt(TreeNode* node);
-TreeNode* AssignExpr(TreeNode* node);
 TreeNode* AssignExprSuffix(TreeNode* node);
 TreeNode* AssignExprOpt(TreeNode* node);
 TreeNode* CondExpr(TreeNode* node, int x);
@@ -974,11 +972,11 @@ TreeNode* Sinstmt(TreeNode* node) {
         node->addChild(condexpr1);
         sinstmtNode = condexpr1;
     }
-    else if (IterationStmt(IterationStmt1,x) != nullptr) {
+    else */if (IterationStmt(IterationStmt1,x) != nullptr) {
         node->addChild(IterationStmt1);
         sinstmtNode = IterationStmt1;
     }
-    else*/ if (Funcall(funcall1, x) != nullptr) {
+    else if (Funcall(funcall1, x) != nullptr) {
         node->addChild(funcall1);
         sinstmtNode = funcall1;
     }
@@ -1031,9 +1029,13 @@ TreeNode* ReturnExpr(TreeNode* node) {
     TreeNode* ArithExpr1 = new TreeNode("arithexpr");
     TreeNode* Variable1 = new TreeNode("variable");
     int x = currentPos;
+    cout << currentToken.id << 5 + 9664646 << endl;
     if (match("1") || match("0")) {
         returnExprNode = new TreeNode(currentToken.id);
         node->addChild(returnExprNode);
+    }else if (Variable(Variable1) != nullptr) {
+        node->addChild(Variable1);
+        returnExprNode = Variable1;
     }
     else if (BoolExpr(BoolExpr1, x) != nullptr) {
         node->addChild(BoolExpr1);
@@ -1044,10 +1046,7 @@ TreeNode* ReturnExpr(TreeNode* node) {
         node->addChild(ArithExpr1);
         returnExprNode = ArithExpr1;
     }
-    else if (Variable(Variable1) != nullptr) {
-        node->addChild(Variable1);
-        returnExprNode = Variable1;
-    }
+    
 
 
     return returnExprNode;
@@ -1816,163 +1815,172 @@ void findLeaves(TreeNode* node, vector<string>& leaves) {
     }
 }
 
-//TreeNode* IterationStmt(TreeNode* node, int x) {
-//    TreeNode* iterationStmtNode = nullptr;
-//    currentPos = x;
-//    if (match("for")) {
-//        iterationStmtNode = new TreeNode("for");
-//        node->addChild(iterationStmtNode);
-//
-//        if (match("(")) {
-//            iterationStmtNode = new TreeNode("(");
-//            node->addChild(iterationStmtNode);
-//
-//
-//            iterationStmtNode = new TreeNode("Init");
-//            if (Init(iterationStmtNode) != nullptr) {
-//                node->addChild(iterationStmtNode);
-//            }
-//
-//            if (match(";")) {
-//                iterationStmtNode = new TreeNode(";");
-//                node->addChild(iterationStmtNode);
-//
-//                iterationStmtNode = new TreeNode("Condexpr");
-//                if (CondExpr(iterationStmtNode) != nullptr) {
-//                    node->addChild(iterationStmtNode);
-//                }
-//
-//                if (match(";")) {
-//                    iterationStmtNode = new TreeNode(";");
-//                    node->addChild(iterationStmtNode);
-//
-//                    iterationStmtNode = new TreeNode("iterat");
-//                    if (iterat(iterationStmtNode) != nullptr) {
-//                        node->addChild(iterationStmtNode);
-//                    }
-//
-//                    if (match(")")) {
-//                        iterationStmtNode = new TreeNode(")");
-//                        node->addChild(iterationStmtNode);
-//
-//                        if (match("{")) {
-//                            iterationStmtNode = new TreeNode("{");
-//                            node->addChild(iterationStmtNode);
-//
-//                            TreeNode* stmtNode = Stmt(node);
-//                            if (stmtNode != nullptr) {
-//                                node->addChild(stmtNode);
-//                            }
-//
-//                            if (match("}")) {
-//                                iterationStmtNode = new TreeNode("}");
-//                                node->addChild(iterationStmtNode);
-//                            }
-//                            else {
-//                                iterationStmtNode = nullptr;
-//                            }
-//                        }
-//                        else {
-//                            iterationStmtNode = nullptr;
-//                        }
-//                    }
-//                    else {
-//                        iterationStmtNode = nullptr;
-//                    }
-//                }
-//                else {
-//                    iterationStmtNode = nullptr;
-//                }
-//            }
-//            else {
-//                iterationStmtNode = nullptr;
-//            }
-//        }
-//        else {
-//            iterationStmtNode = nullptr;
-//        }
-//    }
-//
-//    return iterationStmtNode;
-//}
-//
-//TreeNode* Init(TreeNode* node) {
-//    TreeNode* initNode = nullptr;
-//    TreeNode* AssignExpr1 = new TreeNode("arguexpr");
-//    TreeNode* Decl1 = new TreeNode("Decl1");
-//    int x = currentPos;
-//    if (AssignExpr(initNode) != nullptr) {
-//        ;
-//        node->addChild(AssignExpr1);
-//        initNode = AssignExpr1;
-//    }
-//    else if (Decl(Decl1, x) != nullptr) {
-//        node->addChild(Decl1);
-//        initNode = Decl1;
-//    }
-//
-//    return initNode;
-//}
-//
-//TreeNode* iterat(TreeNode* node) {
-//    TreeNode* iteratNode = nullptr;
-//    iteratNode = new TreeNode("Variable");
-//
-//    if (match("id")) {
-//        iteratNode = new TreeNode(currentToken.id);
-//        node->addChild(iteratNode);
-//        iteratNode = new TreeNode("AssignOp");
-//        if (assignop(iteratNode)) {
-//            node->addChild(iteratNode);
-//            iteratNode = new TreeNode("Variable");
-//            if (Variable(iteratNode)) {
-//                node->addChild(iteratNode);
-//            }
-//            else {
-//                iteratNode = nullptr;
-//            }
-//
-//
-//        }
-//        else {
-//            iteratNode = nullptr;
-//        }
-//    }
-//    else if (Variable(iteratNode)) {
-//        node->addChild(iteratNode);
-//        iteratNode = new TreeNode("AssignOp");
-//        if (assignop(iteratNode)) {
-//            node->addChild(iteratNode);
-//            iteratNode = new TreeNode("Arithexpr");
-//            if (ArithExpr(iteratNode)) {
-//                node->addChild(iteratNode);
-//            }
-//            if (match(";")) {
-//                iteratNode = new TreeNode(";");
-//                node->addChild(iteratNode);
-//            }
-//            else {
-//                iteratNode = nullptr;
-//            }
-//
-//        }
-//        else {
-//            iteratNode = nullptr;
-//        }
-//
-//    }
-//    else {
-//        iteratNode = nullptr;
-//    }
-//
-//    return iteratNode;
-//}
+TreeNode* IterationStmt(TreeNode* node, int x) {
+    TreeNode* iterationStmtNode = nullptr;
+    currentPos = x;
+    if (match("for")) {
+        iterationStmtNode = new TreeNode("for");
+        node->addChild(iterationStmtNode);
+
+        if (match("(")) {
+            iterationStmtNode = new TreeNode("(");
+            node->addChild(iterationStmtNode);
+
+
+            iterationStmtNode = new TreeNode("Init");
+            if (Init(iterationStmtNode) != nullptr) {
+                node->addChild(iterationStmtNode);
+                currentPos--;
+            }
+
+            if (match(";")) {
+                iterationStmtNode = new TreeNode(";");
+                node->addChild(iterationStmtNode);
+
+                iterationStmtNode = new TreeNode("boolexpr");
+                int woh = currentPos;
+                if (BoolExpr(iterationStmtNode,woh) != nullptr) {
+                    node->addChild(iterationStmtNode);
+                }
+                cout << Tokens[currentPos].id << endl;
+                if (match(";")) {
+                    iterationStmtNode = new TreeNode(";");
+                    node->addChild(iterationStmtNode);
+                    while (currentPos + 1 <= Tokens.size() && Tokens[currentPos].id != ")") {
+                       
+                        iterationStmtNode = new TreeNode("iterat");
+                        if (iterat(iterationStmtNode) != nullptr) {
+                            node->addChild(iterationStmtNode);
+                        }
+                        else {
+                            currentPos++;
+                        }
+                    }
+                    if (match(")")) {
+                        iterationStmtNode = new TreeNode(")");
+                        node->addChild(iterationStmtNode);
+
+                        if (match("{")) {
+                            iterationStmtNode = new TreeNode("{");
+                            node->addChild(iterationStmtNode);
+                            while (currentPos + 1 <= Tokens.size() && Tokens[currentPos].id != "}") {
+                                iterationStmtNode =  new TreeNode("Stmt");
+                                if (Stmt(iterationStmtNode) != nullptr) {
+                                    node->addChild(iterationStmtNode);
+                                }
+                                else {
+                                    currentPos++;
+                                }
+                            }
+                            if (match("}")) {
+                                iterationStmtNode = new TreeNode("}");
+                                node->addChild(iterationStmtNode);
+                            }
+                            else {
+                                iterationStmtNode = nullptr;
+                            }
+                        }
+                        else {
+                            iterationStmtNode = nullptr;
+                        }
+                    }
+                    else {
+                        iterationStmtNode = nullptr;
+                    }
+                }
+                else {
+                    iterationStmtNode = nullptr;
+                }
+            }
+            else {
+                iterationStmtNode = nullptr;
+            }
+        }
+        else {
+            iterationStmtNode = nullptr;
+        }
+    }
+
+    return iterationStmtNode;
+}
+
+TreeNode* Init(TreeNode* node) {
+    TreeNode* initNode = nullptr;
+    TreeNode* AssignExpr1 = new TreeNode("arguexpr");
+    TreeNode* Decl1 = new TreeNode("Decl1");
+    int x = currentPos;
+    if (AssignExpr(initNode) != nullptr) {
+        node->addChild(AssignExpr1);
+        initNode = AssignExpr1;
+    }
+    else if (Decl(Decl1, x) != nullptr) {
+        node->addChild(Decl1);
+        initNode = Decl1;
+    }
+
+    return initNode;
+}
+
+TreeNode* iterat(TreeNode* node) {
+    TreeNode* iteratNode = nullptr;
+    iteratNode = new TreeNode("Variable");
+
+    if (match("id")) {
+        iteratNode = new TreeNode(currentToken.id);
+        node->addChild(iteratNode);
+        iteratNode = new TreeNode("AssignOp");
+        if (assignop(iteratNode)) {
+            node->addChild(iteratNode);
+            iteratNode = new TreeNode("Variable");
+            if (Variable(iteratNode)) {
+                node->addChild(iteratNode);
+            }
+            else {
+                iteratNode = nullptr;
+            }
+
+
+        }
+        else {
+            iteratNode = nullptr;
+        }
+    }
+    else if (Variable(iteratNode)) {
+        node->addChild(iteratNode);
+        iteratNode = new TreeNode("AssignOp");
+        if (assignop(iteratNode)) {
+            node->addChild(iteratNode);
+            iteratNode = new TreeNode("Arithexpr");
+            if (ArithExpr(iteratNode)) {
+                node->addChild(iteratNode);
+            }
+            if (match(";")) {
+                iteratNode = new TreeNode(";");
+                node->addChild(iteratNode);
+            }
+            else {
+                iteratNode = nullptr;
+            }
+
+        }
+        else {
+            iteratNode = nullptr;
+        }
+
+    }
+    else {
+        iteratNode = nullptr;
+    }
+
+    return iteratNode;
+}
 TreeNode* assignop(TreeNode* node) {
     TreeNode* assignopNode = nullptr;
 
     if (match("=") || match("*=") || match("/=") || match("%=") || match("+=") ||
         match("-=") || match("<<=") || match(">>=") || match("&=") || match("^=") || match("|=")) {
         assignopNode = new TreeNode(currentToken.id);
+        node->addChild(assignopNode);
     }
     
 
@@ -2014,6 +2022,40 @@ vector<string> findLeafNodes(TreeNode* root) {
     return leaves;
 }
 
+TreeNode* AssignExpr(TreeNode* node) {
+    TreeNode* assignExprNode = nullptr;
+
+    if (match("id")) {
+        assignExprNode = new TreeNode(currentToken.id);
+        node->addChild(assignExprNode);
+
+        if (assignop(assignExprNode)!=nullptr) {
+            assignExprNode = new TreeNode(currentToken.id);
+            node->addChild(assignExprNode);
+
+            assignExprNode = new TreeNode("variable ");
+            if (Variable(assignExprNode)!=nullptr) {
+                node->addChild(assignExprNode);
+            }
+            else {
+                assignExprNode = new TreeNode("arithexpr ");
+                if (ArithExpr(assignExprNode) != nullptr) {
+                node->addChild(assignExprNode);
+            }
+            }
+
+            
+        }
+        else {
+            // Handle error: Expected assignment operator
+        }
+    }
+    else {
+        // Handle error: Expected identifier
+    }
+
+    return assignExprNode;
+}
 
 
 
