@@ -28,8 +28,6 @@ int woh1;
 
 T getToken() {
     if (currentPos < Tokens.size()) {
-        if (counter == 0)
-            cout << Tokens[currentPos].id << endl;
         return Tokens[currentPos++];
     }
     else {
