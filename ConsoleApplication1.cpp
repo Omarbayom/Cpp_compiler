@@ -1801,6 +1801,7 @@ TreeNode* Variablel(TreeNode* node) {
         variablelNode = new TreeNode("Eq");
         if (Eq(variablelNode) != nullptr) {
             node->addChild(variablelNode);
+        }
             if (match(",")) {
                 variablelNode = new TreeNode(",");
                 node->addChild(variablelNode);
@@ -1812,7 +1813,7 @@ TreeNode* Variablel(TreeNode* node) {
                     variablelNode = nullptr;
                 }
             }
-        }
+        
     }
     return variablelNode;
 }
