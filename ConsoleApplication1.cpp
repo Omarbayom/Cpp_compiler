@@ -1046,18 +1046,17 @@ TreeNode* ReturnExpr(TreeNode* node) {
     TreeNode* ArithExpr1 = new TreeNode("arithexpr");
     TreeNode* Variable1 = new TreeNode("variable");
     int x = currentPos;
-    cout << currentToken.id << 5 + 9664646 << endl;
     if (match("1") || match("0")) {
         returnExprNode = new TreeNode(currentToken.id);
         node->addChild(returnExprNode);
-    }else if (Variable(Variable1) != nullptr) {
-        node->addChild(Variable1);
-        returnExprNode = Variable1;
     }
     else if (BoolExpr(BoolExpr1, x) != nullptr) {
         node->addChild(BoolExpr1);
         returnExprNode = BoolExpr1;
 
+    }else if (Variable(Variable1) != nullptr) {
+        node->addChild(Variable1);
+        returnExprNode = Variable1;
     }
     else if (ArithExpr(ArithExpr1) != nullptr) {
         node->addChild(ArithExpr1);
@@ -1162,6 +1161,7 @@ TreeNode* ArgueExpr(TreeNode* node) {
 TreeNode* BoolExpr(TreeNode* node, int x) {
     TreeNode* boolExprNode = nullptr;
     boolExprNode = new TreeNode("Variable");
+    currentPos = x;
     if (Variable(boolExprNode) != nullptr) {
         node->addChild(boolExprNode);
     }
@@ -1178,6 +1178,7 @@ TreeNode* BoolExpr(TreeNode* node, int x) {
         }
     }
     else {
+        currentPos = x;
         boolExprNode = nullptr;
     }
 
@@ -1372,7 +1373,7 @@ TreeNode* StructSpec(TreeNode* node, int x) {
         node->addChild(structSpecNode);
 
         if (match("id")) {
-            TreeNode* structSpecNode = new TreeNode("id");
+            TreeNode* structSpecNode = new TreeNode(currentToken.id);
             node->addChild(structSpecNode);
         }
         else {
@@ -1476,12 +1477,13 @@ TreeNode* SList(TreeNode* node) {
         node->addChild(sListNode);
         sListNode = new TreeNode("Eq");
 
-        Eq(sListNode) != nullptr;
-        node->addChild(sListNode);
+        if (Eq(sListNode) != nullptr) {
+            node->addChild(sListNode);
+        }
 
 
         if (match("id")) {
-            TreeNode* identifierNode = new TreeNode("id");
+            TreeNode* identifierNode = new TreeNode(currentToken.id);
             node->addChild(identifierNode);
         }
         else {
@@ -2093,7 +2095,7 @@ int main()
     processTokens(Tokens);
     SymbolTable(Tokens);
     Pareser();
-    findLeafNodes(root);
+   // findLeafNodes(root);
     /*for (const auto& token : Symb)
         cout << "(" << token.id << "," << token.type << "," << token.level << ")" << endl;*/
     return 0;
