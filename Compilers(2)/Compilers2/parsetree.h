@@ -17,7 +17,6 @@ public:
 protected:
     void showEvent(QShowEvent *event) override;
 
-
 private:
     LexicalAnalyzer l;
     Ui::ParseTree *ui;

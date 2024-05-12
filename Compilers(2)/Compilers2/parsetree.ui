@@ -7,13 +7,21 @@
     <x>0</x>
     <y>0</y>
     <width>1920</width>
-    <height>1080</height>
+    <height>812</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <widget class="QLabel" name="label_pic">
+   <property name="geometry">
+    <rect>
+     <x>-2</x>
+     <y>5</y>
+     <width>1921</width>
+     <height>801</height>
+    </rect>
+   </property>
    <property name="text">
     <string/>
    </property>

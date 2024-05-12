@@ -25,9 +25,10 @@ public:
     {
         if (ParseTree->objectName().isEmpty())
             ParseTree->setObjectName("ParseTree");
-        ParseTree->resize(1920, 1080);
+        ParseTree->resize(1920, 812);
         label_pic = new QLabel(ParseTree);
         label_pic->setObjectName("label_pic");
+        label_pic->setGeometry(QRect(-2, 5, 1921, 801));
 
         retranslateUi(ParseTree);
 

@@ -41,18 +41,28 @@ void MainWindow::setupTable()
         QTableWidgetItem *tokenIDItem = new QTableWidgetItem(QString::fromStdString(l.Symb[row].id));
         QTableWidgetItem *tokenValueItem = new QTableWidgetItem(QString::fromStdString(l.Symb[row].type));
         QTableWidgetItem *lineNumberItem = new QTableWidgetItem(QString::number(row + 1)); // Line number starts from 1
+        // Set font size for each item
+        QFont font = tokenIDItem->font();
+        font.setPointSize(15); // Set the desired font size (12 in this example)
+        tokenIDItem->setFont(font);
+        tokenValueItem->setFont(font);
+        lineNumberItem->setFont(font);
         table->setItem(row, 0, tokenIDItem);
         table->setItem(row, 1, tokenValueItem);
         table->setItem(row, 2, lineNumberItem);
     }
-    table->setMaximumWidth(400); // Set maximum width for the table
+    table->setMaximumWidth(600); // Set maximum width for the table
 
 
 
     // Create a QTextEdit widget to display the file content
+
     fileWidget = new QTextEdit(this); // Assign to member variable
     fileWidget->setPlainText(fileContents);
-    fileWidget->setMaximumWidth(400);
+    fileWidget->setMaximumWidth(600);
+    QFont font = fileWidget->font(); // Get the current font
+    font.setPointSize(19); // Set the desired font size (14 in this example)
+    fileWidget->setFont(font); // Apply the new font to the QTextEdit
 
     // Create a QVBoxLayout for the central widget
     QVBoxLayout *layout = new QVBoxLayout(ui->centralwidget);

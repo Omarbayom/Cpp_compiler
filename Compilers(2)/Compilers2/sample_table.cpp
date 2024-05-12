@@ -24,21 +24,28 @@ void sample_table::setupTable(){
     table->setRowCount(l.Tokens.size());
     table->setColumnCount(3); // Changed to 3 columns
     table->setHorizontalHeaderLabels(QStringList() << "Token ID" << "Token Value" << "Level");
-
+    l.level(l.Tokens);
     // Loop through the tokens and populate the table
     for (size_t row = 0; row < l.Tokens.size(); ++row)
     {
         QTableWidgetItem *tokenIDItem = new QTableWidgetItem(QString::fromStdString(l.Tokens[row].id));
         QTableWidgetItem *tokenValueItem = new QTableWidgetItem(QString::fromStdString(l.Tokens[row].type));
         QTableWidgetItem *lineNumberItem = new QTableWidgetItem(QString::number(l.Tokens[row].level)); // Convert int to QString
+        QFont font = tokenIDItem->font();
+        font.setPointSize(15); // Set the desired font size (12 in this example)
+        tokenIDItem->setFont(font);
+        tokenValueItem->setFont(font);
+        lineNumberItem->setFont(font);
         table->setItem(row, 0, tokenIDItem);
         table->setItem(row, 1, tokenValueItem);
         table->setItem(row, 2, lineNumberItem);
     }
+    table->setMaximumWidth(500);
 
-    table->setMaximumWidth(1000); // Set maximum width for the table
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(table);
+    QHBoxLayout *innerLayout = new QHBoxLayout;
+    innerLayout->addWidget(table);
+    layout->addLayout(innerLayout);
 
     QPushButton *SymbolTableButton = new QPushButton("Back",this);
     connect(SymbolTableButton, &QPushButton::clicked, this, &sample_table::switchPage);
