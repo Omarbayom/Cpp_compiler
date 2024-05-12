@@ -770,11 +770,11 @@ void Start(TreeNode* node) {
     }
     else {
         currentPos = x;
-    }
-    TreeNode* fun = new TreeNode("Fundefs");
-    if (Fundefs(fun) != nullptr)
-        node->addChild(fun);
 
+        TreeNode* fun = new TreeNode("Fundefs");
+        if (Fundefs(fun) != nullptr)
+            node->addChild(fun);
+    }
 }
 
 TreeNode* Fundefs(TreeNode* node) {
@@ -1809,9 +1809,7 @@ TreeNode* Variablel(TreeNode* node) {
                 if (Variablel(variablelNode) != nullptr) {
                     node->addChild(variablelNode);
                 }
-                else {
-                    variablelNode = nullptr;
-                }
+                
             }
         
     }
